@@ -21,6 +21,17 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-15',
 
+  // 如果需要静态生成
+  nitro: {
+    preset: 'netlify',
+    prerender: {
+      crawlLinks: true
+    },
+    experimental: {
+      wasm: true
+    }
+  },
+
   eslint: {
     config: {
       stylistic: {
