@@ -1,6 +1,6 @@
 # netlify.toml
 [build]
-  command = "npx nuxi build"
+  command = "npm run build"
   publish = ".output/public"
 
 [build.environment]
@@ -8,7 +8,7 @@
   NPM_FLAGS = "--legacy-peer-deps"  # 如果依赖有问题
 
 [dev]
-  command = "npx nuxi dev"
+  command = "npm run dev"
   port = 3000
   publish = ".output/public"
 
