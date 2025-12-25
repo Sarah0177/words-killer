@@ -2,7 +2,6 @@
 [build]
   command = "npx nuxi build"
   publish = ".output/public"
-  functions = ".output/server"
 
 [build.environment]
   NODE_VERSION = "20"
