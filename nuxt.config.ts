@@ -21,6 +21,17 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-15',
   ssr: true,
+  app: {
+    head: {
+      titleTemplate: 'word-killer',
+      title: 'word-killer',
+      charset: 'utf-8',
+      htmlAttrs: {
+        lang: 'zh-cn'
+      }
+    },
+    baseURL: '/word-killer/'
+  },
   // 如果需要静态生成
   nitro: {
     preset: 'netlify',

@@ -48,7 +48,7 @@ const toKill = computed(() => {
 const getList = async () => {
   // 调用接口
   try {
-    const { data, pending, error } = await $fetch("/api/words", {
+    const { data, pending, error } = await $fetch("/word-killer/api/words", {
       immediate: false, // 设置为 false，不在组件加载时立即执行
       method: "GET",
     });
