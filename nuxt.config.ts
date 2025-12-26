@@ -30,7 +30,7 @@ export default defineNuxtConfig({
         lang: 'zh-cn'
       }
     },
-    baseURL: '/word-killer/'
+    // baseURL: '/word-killer/'
   },
   // 如果需要静态生成
   nitro: {
