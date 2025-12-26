@@ -37,7 +37,7 @@ const currentWord = computed(() => {
 
 const update = async () => {
   try {
-    await $fetch("/word-killer/api/words", {
+    await $fetch("/api/words", {
       immediate: false, // 设置为 false，不在组件加载时立即执行
       method: "PUT",
       body: {
