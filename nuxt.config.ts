@@ -20,7 +20,7 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-01-15',
-
+  ssr: true,
   // 如果需要静态生成
   nitro: {
     preset: 'netlify',
