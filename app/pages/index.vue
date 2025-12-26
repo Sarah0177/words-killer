@@ -6,11 +6,11 @@
     <span
       >截止目前为止，你已经kill了<span
         class="text-success font-bold text-2xl"
-        >{{ hasKilled.length }}</span
+        >{{ hasKilled?.length }}</span
       >个小怪兽，真棒！</span
     >
     <span>还有</span
-    ><span class="text-danger font-bold text-2xl">{{ toKill.length }}</span
+    ><span class="text-danger font-bold text-2xl">{{ toKill?.length }}</span
     >个小怪兽等待你去击败，加油呀！<UButton class="mx-4 my-4" to="/kill" @click="goToKill">开启战斗之旅！</UButton>
 
     <h1 class="mt-4">
