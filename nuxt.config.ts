@@ -38,6 +38,10 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: true
     },
+    baseURL: '/word-killer/',
+    routeRules: {
+      '/**': { prerender: true }
+    },
     experimental: {
       wasm: true
     }

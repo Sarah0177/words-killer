@@ -4331,7 +4331,7 @@ function _expandFromEnv(value) {
 const _inlineRuntimeConfig = {
   "app": {
     "baseURL": "/word-killer/",
-    "buildId": "63d2ca62-9f27-4078-82c9-de8f41b48f91",
+    "buildId": "fe02712f-e348-4a63-9785-7051acfab7ea",
     "buildAssetsDir": "/_nuxt/",
     "cdnURL": ""
   },
