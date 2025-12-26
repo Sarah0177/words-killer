@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     console.log('err', err)
     return {
       error: true,
-      message: "sorry, something is wrong",
+      message: `sorry, something is wrong.${err}`,
     }
   }
 
