@@ -20,7 +20,7 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-01-15',
-  ssr: true,
+  ssr: false,
   app: {
     head: {
       titleTemplate: 'word-killer',
@@ -33,19 +33,15 @@ export default defineNuxtConfig({
     // baseURL: '/word-killer/'
   },
   // 如果需要静态生成
-  nitro: {
-    preset: 'netlify',
-    prerender: {
-      crawlLinks: true
-    },
-    // baseURL: '/word-killer/',
-    // routeRules: {
-    //   '/**': { prerender: true }
-    // },
-    experimental: {
-      wasm: true
-    }
-  },
+  // nitro: {
+  //   preset: 'netlify',
+  //   prerender: {
+  //     crawlLinks: true
+  //   },
+  //   // experimental: {
+  //   //   wasm: true
+  //   // }
+  // },
 
   eslint: {
     config: {
