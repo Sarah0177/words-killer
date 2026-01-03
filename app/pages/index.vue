@@ -21,19 +21,27 @@
       >个<UButton class="mx-4 my-4" to="/add">去添加</UButton>
     </h1> -->
     
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-16 max-w-4xl">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-8 max-w-4xl">
       
-      <div class="learn p-2 border-1 rounded-sm border-green-500" @click="goToLearn">
+      <div class="learn p-2 border-1 rounded-sm border-red-500 bg-red-400 text-white" @click="goToLearn">
         <div class="text-lg font-bold">待击杀</div>
         <div>{{ toLearn?.length }}</div>
       </div>
-      <div class="review p-2 border-1 rounded-sm border-green-500" @click="goToReview">
+      <div class="review p-2 border-1 rounded-sm border-orange-500 bg-orange-500 text-white" @click="goToReview">
         <div class="text-lg font-bold">待补刀</div>
         <div>{{ toReview?.length }}</div>
       </div>
+      <div class="review p-2 border-1 rounded-sm border-green-500 bg-green-500 text-white" @click="goToList('killed')">
+        <div class="text-lg font-bold">已消灭</div>
+        <div>{{ hasKilled?.length }}</div>
+      </div>
+      <div class="review p-2 border-1 rounded-sm border-gray-300 bg-gray-300" @click="goToList">
+        <div class="text-lg font-bold">全部</div>
+        <div>{{ list?.length }}</div>
+      </div>
     </div>
     <div class="max-w-lg my-8">
-      <UButton class="my-4 w-full" @click="goToList">查看小怪兽列表</UButton>
+      <UButton class="my-4 w-full text-center" @click="goToList">查看小怪兽列表</UButton>
     </div>
 
   </div>
@@ -44,6 +52,7 @@ import { ref, onMounted, computed, h, resolveComponent } from "vue";
 
 import dayjs from "dayjs";
 import { useRouter } from 'vue-router'
+import { queryWords } from "@/request/index.ts"
 
 const router = useRouter()
 const now = dayjs().format("YYYY-MM-DD");
@@ -74,11 +83,7 @@ const toReview = computed(() => {
 const getList = async () => {
   // 调用接口
   try {
-    const { data, pending, error } = await $fetch("/api/words", {
-      immediate: false, // 设置为 false，不在组件加载时立即执行
-      method: "GET",
-    });
-    console.log("getlist", data);
+    const { data } = await queryWords()
     list.value = data;
   } catch (err) {
     console.log("err", err);
@@ -109,8 +114,13 @@ const goToLearn = () => {
    })
 }
 
-const goToList = () => {
-  useState("to-list", () => list);
+const goToList = (type) => {
+  if (type == 'killed') {
+    useState("to-list", () => hasKilled);
+  } else {
+    useState("to-list", () => list);
+  }
+  
   router.push({
     path: '/list',
    })

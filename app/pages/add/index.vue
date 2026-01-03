@@ -18,6 +18,7 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
+import { addWords } from "@/request/index.ts"
 
 const addVal = ref("");
 
@@ -29,12 +30,8 @@ const addList = computed(() => {
 const add = async () => {
   // 调用接口
   try {
-    const { data } = await $fetch("/api/words", {
-      immediate: false, // 设置为 false，不在组件加载时立即执行
-      method: "POST",
-      body: {
-        list: addList.value
-      },
+    await addWords({
+      list: addList.value
     })
     useState("add-state", () => addList);
   } catch(err) {

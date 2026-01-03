@@ -4,13 +4,17 @@ export default defineEventHandler(async (event) => {
   // 更新数据库
   const params = await readBody(event)
   console.log('params', params)
+
+  const finalParams = params.content ? {
+    content: params.content
+  } : {
+    lastKillAt: new Date(),
+    killTimes: { increment: 1 }
+  }
   try {
     await prisma.words.update({
       where: { id: params.id},
-      data: {
-        lastKillAt: new Date(),
-        killTimes: { increment: 1 }
-      }
+      data: finalParams
     })
     return {
       code: '1',
