@@ -44,7 +44,7 @@ jobs:
         run: pnpm install
 
       - name: Generate Static Site
-        run: pnpm run generate
+        run: pnpm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
