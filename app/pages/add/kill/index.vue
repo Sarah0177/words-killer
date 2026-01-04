@@ -39,8 +39,6 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { useRouter, useRoute } from 'vue-router'
-import { updateWord } from "@/request/index.ts"
-
 const toast = useToast()
 const router = useRouter()
 const route = useRoute()
@@ -80,9 +78,13 @@ const killHandler = () => {
 const update = async () => {
   console.log('currentword', currentWord.value)
   try {
-    await updateWord({
-      id: currentWord.value.id,
-    })
+    await $fetch("/api/words", {
+      immediate: false, // 设置为 false，不在组件加载时立即执行
+      method: "PUT",
+      body: {
+        id: currentWord.value.id,
+      },
+    });
   } catch (err) {
     console.log("err", err);
   }
