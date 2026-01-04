@@ -17,23 +17,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed } from "vue";
+import { ref, computed } from "vue";
+import { addWords } from "@/request/index.ts"
 
 const addVal = ref("");
 
 const addList = computed(() => {
-  return addVal.value ? addVal.value.split(",").filter(Boolean) : [];
+  const list = addVal.value ? addVal.value.split(",").filter(Boolean) : []
+  return list.map(item => item.trim())
 });
 
 const add = async () => {
   // 调用接口
   try {
-    const { data, pending, error } = await $fetch("/api/words", {
-      immediate: false, // 设置为 false，不在组件加载时立即执行
-      method: "POST",
-      body: {
-        list: addList.value
-      },
+    await addWords({
+      list: addList.value
     })
     useState("add-state", () => addList);
   } catch(err) {
