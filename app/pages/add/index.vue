@@ -8,7 +8,7 @@
       :rows="4"
     />
     <div>
-      <UButton class="mr-4 my-4" to="/" @click="add">确认</UButton>
+      <UButton class="mr-4 my-4" @click="add">确认</UButton>
       <UButton class="mx-4 my-4" color="error" @click="clear">清空</UButton>
     </div>
     <div>{{ addList.join(" / ") }}</div>
@@ -18,8 +18,10 @@
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
+import { useRouter } from 'vue-router'
 import { addWords } from "@/request/index.ts"
 
+const router = useRouter()
 const addVal = ref("");
 
 const addList = computed(() => {
@@ -33,7 +35,7 @@ const add = async () => {
     await addWords({
       list: addList.value
     })
-    useState("add-state", () => addList);
+    router.push('/')
   } catch(err) {
     console.log('err', err)
   }

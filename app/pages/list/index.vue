@@ -57,11 +57,12 @@
 
 <script lang="ts" setup>
 import type { TableColumn } from "@nuxt/ui";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
-import dayjs from "dayjs";
+import { storeToRefs } from 'pinia'
+import { useWordsStore } from "@/stores/words"
 import { deleteWord, updateWord } from "@/request/index.ts"
-
+import { isKilled } from "@/utils/index.ts"
 type Words = {
   id: string;
   conent: string;
@@ -108,19 +109,24 @@ const columns: TableColumn<Words>[] = [
 ];
 
 const route = useRoute();
-console.log(route.query);
-const list = route.query.id ? useState("to-kill-list") : useState("to-list");
+const store = useWordsStore()
+const { wordsList, hasKilledList } = storeToRefs(store)
+
+const list = computed(() => {
+  const type = route.query.type
+  console.log('type', type)
+  if ( type === 'killed') {
+    return hasKilledList.value
+  } else if (type === '') {
+    return wordsList.value
+  }
+})
 
 const isDeleteModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 
 const row = ref(null);
 const emit = defineEmits<{ close: [boolean] }>();
-
-const isKilled = (needKillTimes, killTimes) => {
-  console.log(needKillTimes, killTimes);
-  return Number(needKillTimes) <= Number(killTimes);
-};
 
 const editHandler = (item:any) => {
   row.value = item.original
