@@ -2,8 +2,13 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxt/ui'
+    '@nuxt/ui',
+    '@pinia/nuxt'
   ],
+
+  imports: {
+    dirs: ['./app/stores']
+  },
 
   devtools: {
     enabled: true
@@ -12,8 +17,13 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   ui: {
-    fonts: false
+    fonts: false,
+    // global: true
   },
+
+  // components: [
+  //   { path: '~/components/global', global: true }
+  // ],
 
   routeRules: {
     '/': { prerender: true }
