@@ -23,3 +23,15 @@ model Words {
   degree      String? @default("easy")
   needKillTimes Int? @default(4)
 }
+
+model task {
+  id             Int @id @default(autoincrement())
+  date           String @unique
+  plannedWords   String
+  completedWords String
+  isCompleted  Boolean @default(false)
+  plannedNumber  Int @default(3)
+  completedNumber Int @default(0)
+  isMadeUp     Boolean @default(false)
+  hasSetTask   Boolean @default(false)
+}
