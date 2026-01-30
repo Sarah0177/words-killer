@@ -1,16 +1,16 @@
 <template>
-  <div class="w-full">
+  <div class="w-full max-w-6lg">
     <UCalendar
       v-model="date"
       class="max-w-lg p-2 mx-auto"
       :max-value="date"
       :key="refreshKey"
+      readonly
     >
       <template #day="{ day }">
         <div
           class="w-8 h-8 rounded-full flex justify-center items-center"
           :class="getClassByStatus(day.toDate('UTC'))"
-          @click="selectDate(day)"
         >
           {{ day.day }}
         </div>
@@ -45,7 +45,7 @@ function getClassByStatus(date: Date) {
     return "";
   } else {
     const hasCompleted = isCompleteTask(dayjs(date).format('YYYY-MM-DD'));
-    return hasCompleted ? "bg-green-400 text-white" : "bg-gray-200";
+    return hasCompleted ? "bg-orange-400 text-white" : "bg-gray-200 text-800";
   }
 }
 

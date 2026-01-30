@@ -39,9 +39,9 @@ useSeoMeta({
         <template #title>
           <span>{{ pageTitle }}</span>
         </template>
-        <template #right>
+        <!-- <template #right>
           <UColorModeButton />
-        </template>
+        </template> -->
       </UHeader>
   
       <UMain>

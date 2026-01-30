@@ -1,25 +1,43 @@
 <template>
-  <div v-if="list?.length" class="p-4">
+  <div v-if="list?.length" class="px-4 flex flex-col h-full">
     <h1>
       共{{ list.length }}个小怪兽<UButton class="mx-4 my-4" to="/add"
         >去添加</UButton
       >
     </h1>
-    <UTable :data="list" :columns="columns" class="flex-1 mb-4">
-      <template #action-cell="{ row }">
-        <UIcon
-          name="i-lucide-edit"
-          class="size-5 mr-4 text-green-400 cursor-pointer"
-          @click="editHandler(row)"
+    <div>
+      <div class="flex pt-1 pb-4 border-b border-accented">
+        <UInput
+          :model-value="table?.tableApi?.getColumn('content')?.getFilterValue() as string"
+          class="max-w-sm"
+          placeholder="搜索小怪兽"
+          @update:model-value="table?.tableApi?.getColumn('content')?.setFilterValue($event)"
         />
+        <UButton class="mx-4" color="error">一键重置</UButton
+      >
+      </div>
+      <UTable sticky ref="table" v-model:column-filters="columnFilters" :data="list" :columns="columns" class="flex-1 mb-4 overflow-scroll">
+        <template #action-cell="{ row }">
+          <UIcon
+            name="i-lucide-edit"
+            class="size-5 mr-3 text-green-400 cursor-pointer"
+            @click="editHandler(row)"
+          />
+  
+          <UIcon
+            name="i-lucide-delete"
+            class="size-5 mr-3 text-red-400 cursor-pointer"
+            @click="deleteHandler(row)"
+          />
 
-        <UIcon
-          name="i-lucide-delete"
-          class="size-5 text-red-400 cursor-pointer"
-          @click="deleteHandler(row)"
-        />
-      </template>
-    </UTable>
+          <UIcon
+            name="i-lucide-brush-cleaning"
+            class="size-5 text-orange-400 cursor-pointer"
+            @click="clearHandler(row)"
+          />
+        </template>
+      </UTable>
+    </div>
     <!-- 修改弹框 -->
      <UModal :open="isEditModalOpen" :overlay="false" title="修改">
       <template #body>
@@ -48,7 +66,7 @@
             @click="isDeleteModalOpen = false"
             >取消</UButton
           >
-          <UButton class="ml-4 my-4" @click="deleteConfirm()">确认</UButton>
+          <UButton class="ml-4 my-4" @click="deleteConfirm(row)">确认</UButton>
         </div>
       </template>
     </UModal>
@@ -57,7 +75,7 @@
 
 <script lang="ts" setup>
 import type { TableColumn } from "@nuxt/ui";
-import { ref, computed } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from 'pinia'
 import { useWordsStore } from "@/stores/words"
@@ -100,7 +118,7 @@ const columns: TableColumn<Words>[] = [
   {
     accessorKey: "killTimes",
     header: "被消灭次数",
-    cell: ({ row }) => `${Number(row.getValue("killTimes"))}`,
+    // cell: ({ row }) => `${Number(row.getValue("killTimes"))}`,
   },
   {
     header: "操作",
@@ -108,19 +126,29 @@ const columns: TableColumn<Words>[] = [
   },
 ];
 
+const table = useTemplateRef('table')
+const columnFilters = ref([
+  {
+    id: 'content',
+    value: ''
+  }
+])
+
 const route = useRoute();
 const store = useWordsStore()
 const { wordsList, hasKilledList } = storeToRefs(store)
+const list = ref(initValue())
 
-const list = computed(() => {
+function initValue () {
   const type = route.query.type
-  console.log('type', type)
   if ( type === 'killed') {
     return hasKilledList.value
   } else if (type === '') {
     return wordsList.value
   }
-})
+}
+
+// const tableKey = ref(0)
 
 const isDeleteModalOpen = ref(false);
 const isEditModalOpen = ref(false);
@@ -152,15 +180,20 @@ const deleteHandler = (item) => {
   isDeleteModalOpen.value = true;
 };
 
-const deleteConfirm = async () => {
-  console.log("delete", row.value);
+const deleteConfirm = async (row) => {
+  console.log("delete", row);
   isDeleteModalOpen.value = !isDeleteModalOpen.value;
   try {
     await deleteWord({id: row.id})
     // 列表里面删除数据
-    list.value = list.value.filter(item => item.id !== row.value.id)
+    list.value = list.value.filter(item => item.id !== row.id)
+    // tableKey.value ++
   } catch(err) {
     console.log('err', err)
   }
 };
+
+const clearHandler = (item) => {
+
+}
 </script>
