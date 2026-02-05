@@ -13,6 +13,7 @@
     <div class="w-full mt-6" v-if="list?.length">
       <div>
         <UCarousel
+          ref="carousel"
           v-slot="{ item }"
           arrows
           :items="list"
@@ -25,7 +26,7 @@
             <div v-for="v in item.needKillTimes" :key="v" class="w-4 h-4 rounded-lg mr-1 blood-drop" :class="v <= item.killTimes ? 'bg-gray-100': 'bg-red-600'"></div>
           </div>
           <div
-            class="mx-auto w-[180px] h-[180px] rounded-full bg-orange-400 text-4xl text-white flex justify-center items-center"
+            class="word mx-auto w-[210px] h-[210px] rounded-full bg-orange-400 text-4xl text-white flex justify-center items-center"
           >{{ item.content }}
           </div>
         </div>
@@ -55,6 +56,7 @@ let templist = route.query.type === 'review'? toReviewList : toLearnList;
 let list = ref(templist.value)
 const canSort = ref(route.query.type === 'review')
 const sortType = ref('asc')
+const carousel = useTemplateRef('carousel')
 
 const activeIndex = ref(0)
 
@@ -76,21 +78,40 @@ definePageMeta({
 })
 
 const killHandler = () => {
-  toast.add({
-    title: '恭喜你，小怪物被你砍中了~',
-    icon: 'i-lucide-biceps-flexed',
-    progress: false,
-    duration: 1000
-  })
+  if (!currentWord.value) {
+    toast.add({
+      title: '到底啦~',
+      icon: 'i-lucide-biceps-flexed',
+      progress: false,
+      duration: 1000
+    })
+  }
   update()
 }
 
 const update = async () => {
-  console.log('currentword', currentWord.value)
   try {
     await updateWord({
       id: currentWord.value.id,
     })
+    toast.add({
+      title: '恭喜你，小怪物被你砍中了~',
+      icon: 'i-lucide-biceps-flexed',
+      progress: false,
+      duration: 1000
+    })
+    // 判断是否到底了
+    if (activeIndex.value + 1 >= list.value.length) {
+      toast.add({
+        title: '到底啦~',
+        icon: 'i-lucide-biceps-flexed',
+        progress: false,
+        duration: 1000
+      })
+      return
+    }
+    onClickNext()
+    carousel.value?.emblaApi?.scrollTo(activeIndex.value)
   } catch (err) {
     console.log("err", err);
   }
@@ -121,6 +142,11 @@ const sortHandler = () => {
   height: 20px;
   border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
   position: relative;
+}
+.word {
+  word-break:break-word;
+  text-align: center;
+  padding: 0 2px;
 }
 
 </style>

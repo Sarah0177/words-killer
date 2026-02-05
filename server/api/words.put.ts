@@ -1,5 +1,6 @@
 import { prisma } from "../../libs/prisma"
 import dayjs from "dayjs";
+import { logger } from '../util/simple-logger'
 
 const updateTask = async (params) => {
   let taskParams = {}
@@ -29,7 +30,8 @@ const updateTask = async (params) => {
     taskParams.isCompleted = task ? temp.split(',').length >= task.plannedNumber : false
   }
   
-  console.log('taskparams', taskParams)
+  // console.log('taskparams', taskParams)
+  logger.info(JSON.stringify(taskParams))
   if (task) {
     await prisma.task.update({
       where: { date },
@@ -37,14 +39,16 @@ const updateTask = async (params) => {
         ...taskParams
       }
     })
-    console.log('task更新数据成功')
+    // console.log('task更新数据成功')
+    logger.info('task更新数据成功')
   } else {
     await prisma.task.create({
       data: {
         ...taskParams
       }
     })
-    console.log('task插入数据库成功')
+    logger.info('task创建数据成功')
+    // console.log('task插入数据库成功')
   }
 }
 
@@ -60,26 +64,68 @@ const updateWord = async (params) => {
     where: { id: params.id },
     data: wordParams
   })
-  console.log('word 更新成功')
+  logger.info('word 更新成功 id:' + params.id)
+}
+
+const resetWord = async (params) => {
+  try {
+    const ids = params.ids
+    for(let i = 0; i < ids.length; i++) {
+      await prisma.words.update({
+        where: { id: Number(ids[i]) },
+        data: {
+          killTimes: 0,
+          needKillTimes: 2 // 默认已经消灭过的单词，重置后需要消灭的次数为2
+        }
+      })
+      logger.info('reset successfully')
+    }
+    
+  } catch(err) {
+    logger.error('reset word err:' + err)
+    return {
+      error: true,
+      message: "sorry, something is wrong when reset:" + err,
+    }
+  }
 }
 
 export default defineEventHandler(async (event) => {
   // 更新数据库
   const params = await readBody(event)
   console.log('params', params)
+  logger.info('params:' + JSON.stringify(params))
 
-  try {
-    await updateWord(params)
-    await updateTask(params)
-    return {
-      code: '1',
-      message: '更新成功'
+  if(params.reset) {
+    try {
+      await resetWord(params)
+      return {
+        code: '1',
+        message: '重置成功'
+      }
+    } catch(err) {
+      logger.error('err:' + err)
+      return {
+        error: true,
+        message: "sorry, something is wrong when update:" + err,
+      }
     }
-  } catch (err) {
-    console.log('err', err)
-    return {
-      error: true,
-      message: "sorry, something is wrong when update:" + err,
+  }
+
+  if(!params.reset) {
+    try {
+      await updateWord(params)
+      await updateTask(params)
+      return {
+        code: '1',
+        message: '更新成功'
+      }
+    } catch (err) {
+      logger.error('err:' + err)
+      return {
+        error: true,
+        message: "sorry, something is wrong when update:" + err,
+      }
     }
   }
 
